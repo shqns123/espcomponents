@@ -87,7 +87,6 @@ light:
 fan:
   - platform: uartex
     name: "Fan 1"
-    speed_count: 4  # 4단계 속도
     state:
       data: [0x20, 0x01, 0x7A]
     state_on:
@@ -96,6 +95,9 @@ fan:
     state_off:
       offset: 7
       data: [0x00]
+    state_speed:
+      offset: 4
+      signed: False
     command_on:
       data: [0x20, 0x7A, 0x01, 0x11, 0x22, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]
       ack: [0x20, 0x01, 0x7A, 0x91]
@@ -104,23 +106,22 @@ fan:
       ack: [0x20, 0x01, 0x7A, 0x91]
     command_speed: !lambda |-
       uint8_t mode;
-      if (x == 1) {
-        mode = 0x21;  // 미풍
-      } else if (x == 2) {
-        mode = 0x22;  // 약풍
-      } else if (x == 3) {
-        mode = 0x23;  // 강풍
+      if (x <= 25) {
+        mode = 0x21;  // 0~25% → 미풍
+      } else if (x <= 50) {
+        mode = 0x22;  // 26~50% → 약풍
+      } else if (x <= 75) {
+        mode = 0x23;  // 51~75% → 강풍
       } else {
-        mode = 0x03;  // 일반 강풍
+        mode = 0x03;  // 76~100% → 일반 강풍
       }
+
       return {{
         0x20, 0x7A, 0x01, 0x11, mode, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
       }, {
         0x20, 0x01, 0x7A, 0x91
       }};
-    state_speed:
-      offset: 4
-      signed: False
+
 
 
 climate:
