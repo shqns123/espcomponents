@@ -36,12 +36,15 @@ uartex:
   tx_header: [0xF7]
   rx_footer: [0xAA]
   tx_footer: [0xAA]
+  rx_checksum: add
+  tx_checksum: add
+  
   version:
     disabled: False
   error:
     disabled: False
   log:
-    disabled: true
+    disabled: False
 
 #작성중
 switch:
