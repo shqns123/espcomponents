@@ -7,7 +7,7 @@ uart:
   tx_pin: GPIO2
 
 external_components:
-  - source: github://shqns123/espcomponents@latest
+  - source: github://shqns123/espcomponents@master
     components: [ uartex ]
     refresh: always  
 
