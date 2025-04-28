@@ -7,7 +7,7 @@ uart:
   tx_pin: GPIO6
 
 external_components:
-  - source: github://shqns123/espcomponents@latest
+  - source: github://eigger/espcomponents@latest
     components: [ uartex ]
     refresh: always  
 
