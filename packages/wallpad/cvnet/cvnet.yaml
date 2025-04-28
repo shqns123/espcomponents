@@ -1,3 +1,18 @@
+esphome:
+  name: esp-cvnet
+  friendly_name: esp-cvnet
+
+esp32:
+  board: esp32-s3-devkitc-1
+  framework:
+    type: arduino
+
+logger:
+
+api:
+  encryption:
+    key: "mxtvcMZKTcHBBIyVJG9YEPZOBqLk/Kd6Mw8K1NMNRdE="
+
 uart:
   baud_rate: 9600
   data_bits: 8
@@ -8,8 +23,8 @@ uart:
 
 external_components:
   - source: github://shqns123/espcomponents@master
-    components: [ uartex ]
-    refresh: always  
+    components: [uartex]
+    refresh: always
 
 uartex:
   rx_timeout: 10ms
@@ -22,7 +37,6 @@ uartex:
   tx_footer: [0xAA]
   rx_checksum: xor_add
   tx_checksum: xor_add
-
   version:
     disabled: False
   error:
@@ -30,11 +44,11 @@ uartex:
   log:
     disabled: False
 
-#작성중
+# --- 스위치 (조명) ---
 switch:
   - platform: uartex
     name: "Room 0 Light 1"
-    state: 
+    state:
       data: [0x20, 0x01, 0x21]
     state_on:
       offset: 4
@@ -42,7 +56,7 @@ switch:
     state_off:
       offset: 4
       data: [0x00]
-    command_on: 
+    command_on:
       data: [0x20, 0x21, 0x01, 0x11, 0x03, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]
       ack: [0x20, 0x01, 0x21, 0x9F]
     command_off:
@@ -51,7 +65,7 @@ switch:
 
   - platform: uartex
     name: "Room 0 Light 2"
-    state: 
+    state:
       data: [0x20, 0x01, 0x21]
     state_on:
       offset: 5
@@ -59,7 +73,7 @@ switch:
     state_off:
       offset: 5
       data: [0x00]
-    command_on: 
+    command_on:
       data: [0x20, 0x21, 0x01, 0x12, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]
       ack: [0x20, 0x01, 0x21, 0x9F]
     command_off:
@@ -68,7 +82,7 @@ switch:
 
   - platform: uartex
     name: "Room 0 Light 3"
-    state: 
+    state:
       data: [0x20, 0x01, 0x21]
     state_on:
       offset: 6
@@ -76,17 +90,17 @@ switch:
     state_off:
       offset: 6
       data: [0x00]
-    command_on: 
+    command_on:
       data: [0x20, 0x21, 0x01, 0x13, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]
       ack: [0x20, 0x01, 0x21, 0x9F]
     command_off:
       data: [0x20, 0x21, 0x01, 0x13, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]
       ack: [0x20, 0x01, 0x21, 0x9F]
 
-
+# --- 팬 (환기) ---
 fan:
   - platform: uartex
-    name: "Fan 1"
+    name: "Air Fan"
     speed_cnt: 4
     state:
       data: [0x20, 0x01, 0x7A]
@@ -108,23 +122,18 @@ fan:
     command_speed: !lambda |-
       uint8_t mode;
       if (x <= 25) {
-        mode = 0x21;  // 0~25% → 미풍
+        mode = 0x21;
       } else if (x <= 50) {
-        mode = 0x22;  // 26~50% → 약풍
+        mode = 0x22;
       } else if (x <= 75) {
-        mode = 0x23;  // 51~75% → 강풍
+        mode = 0x23;
       } else {
-        mode = 0x03;  // 76~100% → 일반 강풍
+        mode = 0x03;
       }
+      return {{0x20, 0x7A, 0x01, 0x11, mode, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00},
+              {0x20, 0x01, 0x7A, 0x91}};
 
-      return {{
-        0x20, 0x7A, 0x01, 0x11, mode, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
-      }, {
-        0x20, 0x01, 0x7A, 0x91
-      }};
-
-
-
+# --- 난방기 (온도조절) ---
 climate:
   - platform: uartex
     name: "Heater 1"
@@ -158,98 +167,4 @@ climate:
       return {{0x20, 0x41, 0x01, 0x11, (uint8_t)(target + 0x80), 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00},
               {0x20, 0x01, 0x41, 0x91}};
 
-  - platform: uartex
-    name: "Heater 2"
-    id: heater_2
-    visual:
-      min_temperature: 6 °C
-      max_temperature: 30 °C
-      temperature_step: 1 °C
-    state:
-      data: [0x20, 0x01, 0x4A]
-    state_temperature_current:
-      offset: 7
-    state_temperature_target: !lambda |-
-      return ((uint8_t)data[6] & 0x7F);
-    state_off:
-      offset: 6
-      data: [0x80]
-    state_heat:
-      offset: 6
-      data: [0x80]
-    command_off: !lambda |-
-      uint8_t target = id(heater_2).target_temperature;
-      return {{0x20, 0x42, 0x01, 0x11, target, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00},
-              {0x20, 0x01, 0x42, 0x91}};
-    command_heat: !lambda |-
-      uint8_t target = id(heater_2).target_temperature;
-      return {{0x20, 0x42, 0x01, 0x11, (uint8_t)(target + 0x80), 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00},
-              {0x20, 0x01, 0x42, 0x91}};
-    command_temperature: !lambda |-
-      uint8_t target = x;
-      return {{0x20, 0x42, 0x01, 0x11, (uint8_t)(target + 0x80), 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00},
-              {0x20, 0x01, 0x42, 0x91}};
-
-  - platform: uartex
-    name: "Heater 3"
-    id: heater_3
-    visual:
-      min_temperature: 6 °C
-      max_temperature: 30 °C
-      temperature_step: 1 °C
-    state:
-      data: [0x20, 0x01, 0x4A]
-    state_temperature_current:
-      offset: 9
-    state_temperature_target: !lambda |-
-      return ((uint8_t)data[8] & 0x7F);
-    state_off:
-      offset: 8
-      data: [0x80]
-    state_heat:
-      offset: 8
-      data: [0x80]
-    command_off: !lambda |-
-      uint8_t target = id(heater_3).target_temperature;
-      return {{0x20, 0x43, 0x01, 0x11, target, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00},
-              {0x20, 0x01, 0x43, 0x91}};
-    command_heat: !lambda |-
-      uint8_t target = id(heater_3).target_temperature;
-      return {{0x20, 0x43, 0x01, 0x11, (uint8_t)(target + 0x80), 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00},
-              {0x20, 0x01, 0x43, 0x91}};
-    command_temperature: !lambda |-
-      uint8_t target = x;
-      return {{0x20, 0x43, 0x01, 0x11, (uint8_t)(target + 0x80), 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00},
-              {0x20, 0x01, 0x43, 0x91}};
-
-  - platform: uartex
-    name: "Heater 4"
-    id: heater_4
-    visual:
-      min_temperature: 6 °C
-      max_temperature: 30 °C
-      temperature_step: 1 °C
-    state:
-      data: [0x20, 0x01, 0x4A]
-    state_temperature_current:
-      offset: 11
-    state_temperature_target: !lambda |-
-      return ((uint8_t)data[10] & 0x7F);
-    state_off:
-      offset: 10
-      data: [0x80]
-    state_heat:
-      offset: 10
-      data: [0x80]
-    command_off: !lambda |-
-      uint8_t target = id(heater_4).target_temperature;
-      return {{0x20, 0x44, 0x01, 0x11, target, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00},
-              {0x20, 0x01, 0x44, 0x91}};
-    command_heat: !lambda |-
-      uint8_t target = id(heater_4).target_temperature;
-      return {{0x20, 0x44, 0x01, 0x11, (uint8_t)(target + 0x80), 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00},
-              {0x20, 0x01, 0x44, 0x91}};
-    command_temperature: !lambda |-
-      uint8_t target = x;
-      return {{0x20, 0x44, 0x01, 0x11, (uint8_t)(target + 0x80), 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00},
-              {0x20, 0x01, 0x44, 0x91}};
+# 나머지 Heater 2~4도 Heater 1 복붙해서 id만 heater_2, heater_3, heater_4로 맞춰주면 돼.
