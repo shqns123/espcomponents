@@ -7,7 +7,9 @@ logger:
   level: ERROR
 
 # Enable Home Assistant API
-api: 'TqEMVOlWoPATOuPI5KjBLhkPNfaxOVsQxiDlmB5CwJc='
+api:
+  encryption:
+    key: "PQo+b/yqYgeEqolD6krUdKTeXQBPumEewgxs2qXPxgY="
 
 ota:
   platform: esphome
