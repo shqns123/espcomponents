@@ -20,8 +20,6 @@ uart:
   stop_bits: 1
   rx_pin: GPIO1
   tx_pin: GPIO2
-  rx_checksum: none
-  tx_checksum: none
 
   
 external_components:
