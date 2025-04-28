@@ -28,7 +28,7 @@ external_components:
     refresh: always
 
 uartex:
-  rx_timeout: 10ms
+  rx_timeout: 100ms
   tx_delay: 50ms
   tx_timeout: 500ms
   tx_retry_cnt: 3
