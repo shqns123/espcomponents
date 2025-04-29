@@ -39,6 +39,7 @@ void UARTExFan::publish(const std::vector<uint8_t>& data)
         if (speed == 0x21) speed = 1;
         else if (speed == 0x22) speed = 2;
         else if (speed == 0x23) speed = 3;
+        else if (speed == 0x03) speed = 4;
         else speed = 1; // fallback
 
         if (this->speed != speed)
@@ -85,6 +86,7 @@ void UARTExFan::control(const fan::FanCall& call)
         if (speed == 1) speed = 0x21;
         else if (speed == 2) speed = 0x22;
         else if (speed == 3) speed = 0x23;
+        else if (speed == 4) speed = 0x03;
         else speed = 0x21; // fallback
 
         if (enqueue_tx_cmd(get_command_speed(speed)))
