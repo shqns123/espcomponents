@@ -30,7 +30,7 @@ external_components:
 uartex:
   rx_timeout: 100ms
   tx_delay: 50ms
-  tx_timeout: 500ms
+  tx_timeout: 1000ms
   tx_retry_cnt: 3
   rx_header: [0xF7]
   tx_header: [0xF7]
@@ -51,7 +51,7 @@ switch:
   - platform: uartex
     name: "Room 0 Light 1"
     state: 
-      data: [0x20, 0x01, 0x21]
+      data: [0x20, 0x01, 0x21, 0x81]
     state_on:
       offset: 4
       data: [0x01]
@@ -68,7 +68,7 @@ switch:
   - platform: uartex
     name: "Room 0 Light 2"
     state: 
-      data: [0x20, 0x01, 0x21]
+      data: [0x20, 0x01, 0x21, 0x81]
     state_on:
       offset: 5
       data: [0x01]
@@ -85,7 +85,7 @@ switch:
   - platform: uartex
     name: "Room 0 Light 3"
     state: 
-      data: [0x20, 0x01, 0x21]
+      data: [0x20, 0x01, 0x21, 0x81]
     state_on:
       offset: 6
       data: [0x01]
