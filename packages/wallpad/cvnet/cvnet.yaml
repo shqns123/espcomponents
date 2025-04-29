@@ -14,7 +14,7 @@ api:
     key: "mxtvcMZKTcHBBIyVJG9YEPZOBqLk/Kd6Mw8K1NMNRdE="
 
 uart:
-  baud_rate: 9600
+  baud_rate: 11520
   data_bits: 8
   parity: NONE
   stop_bits: 1
