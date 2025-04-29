@@ -129,7 +129,7 @@ fan:
 
 climate:
   - platform: uartex
-    name: Living heat"
+    name: "Livingroom heat"
     id: heater_1
     visual:
       min_temperature: 14 °C
