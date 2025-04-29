@@ -8,16 +8,13 @@ esp32:
     type: arduino
 
 logger:
-  level: VERY_VERBOSE
-  logs:
-    uartex: VERY_VERBOSE
 
 api:
   encryption:
     key: "mxtvcMZKTcHBBIyVJG9YEPZOBqLk/Kd6Mw8K1NMNRdE="
 
 uart:
-  baud_rate: 11520
+  baud_rate: 9600
   data_bits: 8
   parity: NONE
   stop_bits: 1
