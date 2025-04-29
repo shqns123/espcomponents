@@ -102,9 +102,7 @@ switch:
 
 fan:
   - platform: uartex
-    id: my_air_fan
     name: "Air Fan"
-    speed_cnt: 4   # ✅ 4단계
     state:
       data: [0x20, 0x01, 0x7A]
     state_on:
@@ -121,19 +119,7 @@ fan:
       ack: [0x20, 0x01, 0x7A, 0x91]
     command_speed: !lambda |-
       uint8_t speed = x;
-      uint8_t packet_speed;
-      if (speed == 1) {
-        packet_speed = 0x21;  // 1단 = 청정 미
-      } else if (speed == 2) {
-        packet_speed = 0x22;  // 2단 = 청정 약
-      } else if (speed == 3) {
-        packet_speed = 0x23;  // 3단 = 청정 강
-      } else if (speed == 4) {
-        packet_speed = 0x03;  // 4단 = 환기 강
-      } else {
-        packet_speed = 0x01;  // fallback (혹시 모를 에러 대비)
-      }
-      return {{0x20, 0x7A, 0x01, 0x11, packet_speed, 0x00, 0x00, 0x0F, 0x00, 0x00, 0x00, 0x00}, {0x20, 0x01, 0x7A, 0x91}};
+      return {{0x20, 0x7A, 0x01, 0x11, speed, 0x00, 0x00, 0x0F, 0x00, 0x00, 0x00, 0x00},{0x20, 0x01, 0x7A, 0x91}};
     state_speed:
       offset: 4
       signed: False
