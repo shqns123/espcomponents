@@ -103,7 +103,7 @@ switch:
 fan:
   - platform: uartex
     name: "Air Fan"
-    speed_count: 3
+    speed_cnt: 3
     preset_modes:
       - "환기"
       - "청정"
