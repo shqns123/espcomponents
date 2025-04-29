@@ -92,6 +92,6 @@ void UARTExFan::control(const fan::FanCall& call)
     if (!this->state && changed_state) enqueue_tx_cmd(get_command_off());
     publish_state();
 
-
+}
 }  // namespace uartex
 }  // namespace esphome
