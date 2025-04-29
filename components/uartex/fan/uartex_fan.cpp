@@ -83,12 +83,15 @@ void UARTExFan::control(const fan::FanCall& call)
         this->preset_mode = call.get_preset_mode();
         changed_preset = true;
     }
-    if (changed_preset) enqueue_tx_cmd(get_command_preset(this->preset_mode));
+    if (changed_preset) {
+        enqueue_tx_cmd(get_command_preset(this->preset_mode));
+        publish_state();
+    }
     if (this->state && changed_state) enqueue_tx_cmd(get_command_on());
     if (changed_speed) enqueue_tx_cmd(get_command_speed(this->speed));
     if (!this->state && changed_state) enqueue_tx_cmd(get_command_off());
     publish_state();
-}
+
 
 }  // namespace uartex
 }  // namespace esphome
