@@ -49,7 +49,7 @@ uartex:
 #작성중
 switch:
   - platform: uartex
-    name: "Room 0 Light 1"
+    name: "Living 1"
     state: 
       data: [0x20, 0x01, 0x21, 0x81]
     state_on:
@@ -66,7 +66,7 @@ switch:
       ack: [0x20, 0x01, 0x21, 0x9F]
 
   - platform: uartex
-    name: "Room 0 Light 2"
+    name: "Living 2"
     state: 
       data: [0x20, 0x01, 0x21, 0x81]
     state_on:
@@ -83,7 +83,7 @@ switch:
       ack: [0x20, 0x01, 0x21, 0x9F]
 
   - platform: uartex
-    name: "Room 0 Light 3"
+    name: "Living 3"
     state: 
       data: [0x20, 0x01, 0x21, 0x81]
     state_on:
@@ -102,7 +102,7 @@ switch:
 
 fan:
   - platform: uartex
-    name: "Fan 1"
+    name: "Air Fan"
     state:
       data: [0x20, 0x01, 0x7A]
     state_on:
@@ -126,10 +126,10 @@ fan:
 
 climate:
   - platform: uartex
-    name: "Heater 1"
+    name: Living heat"
     id: heater_1
     visual:
-      min_temperature: 6 °C
+      min_temperature: 14 °C
       max_temperature: 30 °C
       temperature_step: 1 °C
     state:
@@ -158,10 +158,10 @@ climate:
               {0x20, 0x01, 0x41, 0x91}};
 
   - platform: uartex
-    name: "Heater 2"
+    name: "Bedroom heat"
     id: heater_2
     visual:
-      min_temperature: 6 °C
+      min_temperature: 14 °C
       max_temperature: 30 °C
       temperature_step: 1 °C
     state:
@@ -190,10 +190,10 @@ climate:
               {0x20, 0x01, 0x42, 0x91}};
 
   - platform: uartex
-    name: "Heater 3"
+    name: "Babyroom heat"
     id: heater_3
     visual:
-      min_temperature: 6 °C
+      min_temperature: 14 °C
       max_temperature: 30 °C
       temperature_step: 1 °C
     state:
@@ -222,10 +222,10 @@ climate:
               {0x20, 0x01, 0x43, 0x91}};
 
   - platform: uartex
-    name: "Heater 4"
+    name: "pcroom heat"
     id: heater_4
     visual:
-      min_temperature: 6 °C
+      min_temperature: 14 °C
       max_temperature: 30 °C
       temperature_step: 1 °C
     state:
