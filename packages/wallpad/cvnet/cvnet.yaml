@@ -44,7 +44,7 @@ uartex:
   error:
     disabled: False
   log:
-    disabled: False
+    disabled: True
 
 #작성중
 switch:
