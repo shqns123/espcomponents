@@ -103,6 +103,7 @@ switch:
 fan:
   - platform: uartex
     name: "Air Fan"
+    speed_count: 4
     state:
       data: [0x20, 0x01, 0x7A]
     state_on:
