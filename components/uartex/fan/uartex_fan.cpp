@@ -29,14 +29,22 @@ fan::FanTraits UARTExFan::get_traits()
 void UARTExFan::publish(const std::vector<uint8_t>& data)
 {
     bool changed = false;
+
+    // 여기 수정함 🔥
     optional<float> val = get_state_speed(data);
-    if (val.has_value() && this->speed != (int)val.value())
-    {
-        this->speed = (int)val.value();
-        changed = true;
+    if (val.has_value()) {
+        int new_speed = (int)val.value();
+        if (this->preset_mode == "청정") {
+            new_speed -= 0x20;  // 청정 preset일 때 0x20 빼기!
+        }
+        if (this->speed != new_speed) {
+            this->speed = new_speed;
+            changed = true;
+        }
     }
+
     optional<std::string> preset = get_state_preset(data);
-    if(preset.has_value() && this->preset_mode != preset.value())
+    if (preset.has_value() && this->preset_mode != preset.value())
     {
         this->preset_mode = preset.value();
         changed = true;
@@ -58,6 +66,7 @@ void UARTExFan::control(const fan::FanCall& call)
     bool changed_oscillating = false;
     bool changed_direction = false;
     bool changed_preset = false;
+
     if (call.get_state().has_value() && this->state != *call.get_state())
     {
         this->state = *call.get_state();
@@ -83,15 +92,18 @@ void UARTExFan::control(const fan::FanCall& call)
         this->preset_mode = call.get_preset_mode();
         changed_preset = true;
     }
+
     if (changed_preset) {
         enqueue_tx_cmd(get_command_preset(this->preset_mode));
-        publish_state();
+        publish_state();  // ✅ preset 변경 후 상태 업데이트 추가
     }
+
     if (this->state && changed_state) enqueue_tx_cmd(get_command_on());
     if (changed_speed) enqueue_tx_cmd(get_command_speed(this->speed));
     if (!this->state && changed_state) enqueue_tx_cmd(get_command_off());
-    publish_state();
 
+    publish_state();
 }
+
 }  // namespace uartex
 }  // namespace esphome
